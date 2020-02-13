@@ -8,3 +8,25 @@ export const USER = gql`
     }
   }
 `;
+
+export const FETCH_ALL_POST = gql`
+  query posts {
+    posts {
+      id
+      username
+      body
+      comments {
+        id
+        commentAt
+        commentBy
+        commentAt
+        body
+      }
+      likes {
+        id
+        likedBy
+        likedAt
+      }
+    }
+  }
+`;
