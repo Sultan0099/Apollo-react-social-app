@@ -13,7 +13,13 @@ import { Link } from "react-router-dom";
 import { USER_LOGIN } from "../mutations";
 import { AuthContext } from "../context/Authcontext";
 
-function Login(props: any) {
+interface IErrors {
+  email?: string;
+  password?: string;
+  err?: string;
+}
+
+function Login(props: any): JSX.Element {
   if (localStorage.getItem("jwtToken")) {
     props.history.push("/");
   }
@@ -23,9 +29,8 @@ function Login(props: any) {
 
   const [email, setEmail] = useState<string>("user@example.com");
   const [password, setPassword] = useState<string>("123456");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<IErrors>({});
+
   const [signIn, { loading: mutationLoading }] = useMutation(USER_LOGIN, {
     update(_: any, { data: { signIn } }) {
       delete signIn.__typename;
@@ -62,7 +67,7 @@ function Login(props: any) {
       </Typography>
       <TextField
         variant="filled"
-        error={errors.email ? true : false}
+        error={errors.email || errors.err ? true : false}
         label="Email"
         fullWidth
         value={email}
@@ -72,7 +77,7 @@ function Login(props: any) {
       />
       <TextField
         variant="filled"
-        error={errors.password ? true : false}
+        error={errors.password || errors.err ? true : false}
         label="Password"
         fullWidth
         value={password}
@@ -111,7 +116,7 @@ function Login(props: any) {
         </Button>
       )}
       <Link
-        to="/signup"
+        to="/register"
         style={{
           color: "blue",
           // textDecoration: "none",
@@ -121,7 +126,7 @@ function Login(props: any) {
         }}
       >
         {" "}
-        Creater New Account{" "}
+        Create New Account{" "}
       </Link>
     </Container>
   );

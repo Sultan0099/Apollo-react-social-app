@@ -18,10 +18,10 @@ interface IUser {
   password?: string;
   username?: string;
   confirmPassword?: string;
-  fullName?: string;
+  name?: string;
 }
 
-function Signup(props: any) {
+function Register(props: any): JSX.Element {
   if (localStorage.getItem("jwtToken")) {
     props.history.push("/");
   }
@@ -32,12 +32,13 @@ function Signup(props: any) {
   const [user, setUser] = useState<IUser>({
     email: "",
     username: "",
-    fullName: "",
+    name: "",
     password: "",
     confirmPassword: ""
   });
 
   const [errors, setErrors] = useState<IUser>({});
+
   const [register, { loading: mutationLoading }] = useMutation(USER_REGISTER, {
     update(_: any, { data: { register } }) {
       delete register.__typename;
@@ -76,16 +77,14 @@ function Signup(props: any) {
       setErrors({});
       if (user.password !== user.confirmPassword) {
         setErrors({ ...errors, confirmPassword: "Password not matched" });
+        return;
       }
-      if (user.fullName == "") {
-        setErrors({ ...errors, fullName: "Please Enter Full Name" });
-      }
-      console.log(errors);
+
       await register({
         variables: {
           email: user.email,
           password: user.password,
-          name: user.fullName,
+          name: user.name,
           username: user.username
         }
       });
@@ -122,12 +121,12 @@ function Signup(props: any) {
       />
       <TextField
         variant="filled"
-        error={errors.fullName ? true : false}
+        error={errors.name ? true : false}
         label="Full Name"
         fullWidth
         type="text"
-        value={user.fullName}
-        name="fullName"
+        value={user.name}
+        name="name"
         onChange={handleChange}
         style={{ marginTop: 10 }}
       />
@@ -216,4 +215,4 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default Signup;
+export default Register;

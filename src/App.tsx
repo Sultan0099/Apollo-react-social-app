@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Register from "./pages/Register";
 
 import { auth } from "./components/HOCs/Auth";
 import { AuthProvider } from "./context/Authcontext";
@@ -14,10 +14,11 @@ const App = () => {
   return (
     <AuthProvider>
       <React.Fragment>
+        {/* <Route exact={true} path="/" component={auth(Home)} /> */}
         <Route exact={true} path="/" component={auth(Home)} />
         <Route exact={true} path="/Profile" component={Profile} />
         <Route exact={true} path="/login" component={Login} />
-        <Route exact={true} path="/Signup" component={Signup} />
+        <Route exact={true} path="/register" component={Register} />
       </React.Fragment>
     </AuthProvider>
   );

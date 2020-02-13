@@ -1,13 +1,18 @@
 import React, { useContext } from "react";
 
+import NavigationBar from "../components/NavigationBar";
+
 import { AuthContext } from "../context/Authcontext";
 
-function Home(props: any) {
+function Home(props: any): JSX.Element {
   const context = useContext(AuthContext);
   return (
     <div>
-      <h1>user : {context.user.id} </h1>
-      <h1>user : {context.user.username} </h1>
+      <NavigationBar
+        {...props}
+        username={context.user.username}
+        logout={context.logout}
+      />
     </div>
   );
 }
