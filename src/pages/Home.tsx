@@ -4,21 +4,21 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useQuery } from "@apollo/react-hooks";
-
+import InfiniteScroll from "react-infinite-scroll-component";
 import NavigationBar from "../components/NavigationBar";
 import Post from "../components/Post";
 
 import { AuthContext } from "../context/Authcontext";
-import { FETCH_ALL_POST } from "../query";
+import { useFetchPosts } from "../utils/hooks";
 
 function Home(props: any): JSX.Element {
   const context = useContext(AuthContext);
   const classes = useStyles();
 
-  const { data, loading, error } = useQuery(FETCH_ALL_POST);
+  const { error, posts, formatDate, fetchNextPosts, hasMore } = useFetchPosts();
 
-  console.log(data, loading);
+  if (error) return <h1> error </h1>;
+
   return (
     <div>
       <NavigationBar
@@ -26,28 +26,39 @@ function Home(props: any): JSX.Element {
         username={context.user.username}
         logout={context.logout}
       />
-      <Grid container className={classes.container}>
-        <Grid item xs={7}>
-          {!loading &&
-            data.posts.map((post: any) => {
-              return (
-                <Post
-                  key={post.id}
-                  id={post.id}
-                  username={post.username}
-                  body={post.body}
-                  comments={post.comment}
-                  likes={post.like}
-                />
-              );
-            })}
-        </Grid>
-        <Grid item xs={4}>
-          <Paper>
-            <h1> Porfile </h1>
-          </Paper>
-        </Grid>
-      </Grid>
+
+      {posts && (
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={fetchNextPosts}
+          hasMore={hasMore}
+          endMessage={<p> End </p>}
+          loader={<h4>Loading...</h4>}
+        >
+          <Grid container className={classes.container}>
+            <Grid item xs={7}>
+              {posts.map((post: any) => {
+                return (
+                  <Post
+                    key={post.id}
+                    id={post.id}
+                    username={post.username}
+                    body={post.body}
+                    comments={post.comment}
+                    likes={post.like}
+                    createdAt={formatDate(post.createdAt)}
+                  />
+                );
+              })}
+            </Grid>
+            <Grid item xs={4}>
+              <Paper>
+                <h1> Porfile </h1>
+              </Paper>
+            </Grid>
+          </Grid>
+        </InfiniteScroll>
+      )}
     </div>
   );
 }

@@ -17,16 +17,25 @@ interface IPost {
   body: string;
   comments: [];
   likes: [];
+  createdAt: string;
 }
 
 function Post(props: IPost) {
   const classes = useStyles();
-  const { username, body, comments, likes } = props;
+  const { username, body, comments, likes, createdAt } = props;
   return (
     <Card className={classes.root}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="h2">
           {username}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          className={classes.date}
+        >
+          {createdAt}
         </Typography>
         <Typography variant="body1" color="textSecondary" component="p">
           {body}
@@ -51,6 +60,9 @@ const useStyles = makeStyles({
   },
   media: {
     height: 140
+  },
+  date: {
+    color: "blue"
   }
 });
 export default Post;

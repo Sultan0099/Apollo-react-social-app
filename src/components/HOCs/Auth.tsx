@@ -1,4 +1,4 @@
-import React, { FunctionComponentElement } from "react";
+import React from "react";
 import { Redirect } from "react-router-dom";
 
 export const auth = (OriginalComponent: React.FC): React.FC => {
