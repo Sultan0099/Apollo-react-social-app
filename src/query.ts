@@ -1,10 +1,15 @@
 import gql from "graphql-tag";
 
-export const USER = gql`
+export const FETCH_USER = gql`
   query user($id: ID!) {
     user(id: $id) {
       id
       username
+      email
+      name
+      posts {
+        id
+      }
     }
   }
 `;
@@ -25,6 +30,8 @@ export const FETCH_PAGINATED_POST = gql`
         }
         likes {
           id
+          likedBy
+          likedAt
         }
         comments {
           id

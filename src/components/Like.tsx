@@ -1,19 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 import ThumbUpAltTwoToneIcon from "@material-ui/icons/ThumbUpAltTwoTone";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
 
-function Like() {
+import { useMutation } from "@apollo/react-hooks";
+import { LIKE_POST } from "../mutations";
+
+import { AuthContext } from "../context/Authcontext";
+interface ILike {
+  likesProp: any[];
+  postId: string;
+}
+
+function Like(props: ILike) {
+  const { user } = useContext(AuthContext);
   const classes = useStyles();
   const [like, setLike] = useState<boolean>(false);
+  const [likes, setLikes] = useState<any[]>([]);
 
-  function likePost() {
-    console.log("post liked");
-    setLike(!like);
+  const { likesProp, postId } = props;
+
+  const [likePost, loading] = useMutation(LIKE_POST, {
+    update(_: any, { data: { likePost } }) {
+      setLikes([...likePost.likes]);
+      setLike(!like);
+    }
+  });
+
+  useEffect(() => {
+    const youLiked = likesProp.find(like => like.likedBy === user.username);
+    setLikes([...likesProp]);
+    if (youLiked) setLike(true);
+  }, []);
+
+  async function handleLikePost() {
+    await likePost({ variables: { postId } });
   }
 
   return (
@@ -21,11 +46,16 @@ function Like() {
       size="small"
       color="primary"
       className={classes.iconButton}
-      onClick={likePost}
+      onClick={handleLikePost}
     >
-      <Badge badgeContent={4} color="secondary" className={classes.badge}>
-        {like ? <ThumbUpAltRoundedIcon /> : <ThumbUpAltTwoToneIcon />}
-      </Badge>
+      {like ? (
+        <ThumbUpAltRoundedIcon style={{ width: 24 }} />
+      ) : (
+        <ThumbUpAltTwoToneIcon style={{ width: 20 }} />
+      )}
+      <Typography variant="body2" style={{ marginTop: 4, marginLeft: 4 }}>
+        {likes.length > 0 && likes.length}
+      </Typography>
     </IconButton>
   );
 }
@@ -33,12 +63,10 @@ function Like() {
 const useStyles = makeStyles({
   iconButton: {
     padding: 5,
+    borderRadius: 10,
     "&:hover": {
       background: "#92C2E7"
     }
-  },
-  badge: {
-    padding: 4
   }
 });
 

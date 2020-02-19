@@ -15,7 +15,7 @@ export function useFetchPosts() {
 
   const [posts, setPosts] = useState<any[]>([]);
 
-  const { data, error, refetch } = useQuery(FETCH_PAGINATED_POST, {
+  const { data, error, refetch, loading } = useQuery(FETCH_PAGINATED_POST, {
     variables: {
       page: queryVariables.page,
       postLength: queryVariables.postLength
@@ -49,6 +49,7 @@ export function useFetchPosts() {
     posts,
     formatDate,
     fetchNextPosts,
+    loading,
     hasMore: data && data.paginatedPost.hasMore
   };
 }

@@ -29,3 +29,17 @@ export const USER_REGISTER = gql`
     }
   }
 `;
+
+export const LIKE_POST = gql`
+  mutation likePost($postId: ID!) {
+    likePost(postId: $postId) {
+      id
+      likes {
+        id
+        userId
+        likedBy
+        likedAt
+      }
+    }
+  }
+`;

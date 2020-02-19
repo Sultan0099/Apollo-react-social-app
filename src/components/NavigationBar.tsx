@@ -6,8 +6,6 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Redirect } from "react-router-dom";
-
 const NavigationBar = (props: any) => {
   const classes = useStyles();
 
@@ -20,7 +18,7 @@ const NavigationBar = (props: any) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             {username}
@@ -36,7 +34,8 @@ const NavigationBar = (props: any) => {
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginBottom: 50
   },
 
   title: {

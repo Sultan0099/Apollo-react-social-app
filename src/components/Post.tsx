@@ -12,7 +12,7 @@ import Comment from "./Comment";
 
 interface IPost {
   key: string;
-  id: string;
+  postId: string;
   username: string;
   body: string;
   comments: [];
@@ -22,7 +22,7 @@ interface IPost {
 
 function Post(props: IPost) {
   const classes = useStyles();
-  const { username, body, comments, likes, createdAt } = props;
+  const { username, body, comments, likes, createdAt, postId } = props;
   return (
     <Card className={classes.root}>
       <CardContent>
@@ -43,7 +43,7 @@ function Post(props: IPost) {
       </CardContent>
       <Divider />
       <CardActions>
-        <Like />
+        <Like likesProp={likes} postId={postId} />
         <Comment />
       </CardActions>
     </Card>

@@ -27,7 +27,7 @@ function Login(props: any): JSX.Element {
 
   const context = useContext(AuthContext);
 
-  const [email, setEmail] = useState<string>("user@example.com");
+  const [email, setEmail] = useState<string>("user@gmail.com");
   const [password, setPassword] = useState<string>("123456");
   const [errors, setErrors] = useState<IErrors>({});
 
