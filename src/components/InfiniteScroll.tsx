@@ -14,7 +14,6 @@ function InfiniteScrollComp() {
     hasMore,
     loading
   } = useFetchPosts();
-  console.log(posts);
   if (error) return <p> error </p>;
 
   return (
@@ -28,7 +27,7 @@ function InfiniteScrollComp() {
       {posts.map((post: any) => {
         return (
           <Post
-            key={post.id}
+            key={`${post.id}`}
             postId={post.id}
             username={post.username}
             body={post.body}

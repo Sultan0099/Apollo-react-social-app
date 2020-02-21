@@ -6,8 +6,15 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import CommentTwoToneIcon from "@material-ui/icons/CommentTwoTone";
 
-function Comment(): JSX.Element {
+interface IComments {
+  commentsProp: any[];
+  postId: string;
+}
+
+function Comment(props: IComments): JSX.Element {
   const classes = useStyles();
+
+  const { commentsProp } = props;
 
   return (
     <IconButton size="small" color="primary" className={classes.iconButton}>

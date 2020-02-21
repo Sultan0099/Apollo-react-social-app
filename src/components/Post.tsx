@@ -44,7 +44,7 @@ function Post(props: IPost) {
       <Divider />
       <CardActions>
         <Like likesProp={likes} postId={postId} />
-        <Comment />
+        <Comment commentsProp={comments} postId={postId} />
       </CardActions>
     </Card>
   );

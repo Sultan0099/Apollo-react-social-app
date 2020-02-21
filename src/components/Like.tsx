@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import ThumbUpAltTwoToneIcon from "@material-ui/icons/ThumbUpAltTwoTone";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { useMutation } from "@apollo/react-hooks";
 import { LIKE_POST } from "../mutations";
@@ -24,7 +25,7 @@ function Like(props: ILike) {
 
   const { likesProp, postId } = props;
 
-  const [likePost, loading] = useMutation(LIKE_POST, {
+  const [likePost, { loading }] = useMutation(LIKE_POST, {
     update(_: any, { data: { likePost } }) {
       setLikes([...likePost.likes]);
       setLike(!like);
