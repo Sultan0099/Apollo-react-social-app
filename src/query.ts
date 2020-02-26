@@ -35,6 +35,9 @@ export const FETCH_PAGINATED_POST = gql`
         }
         comments {
           id
+          body
+          commentBy
+          commentAt
         }
       }
       hasMore

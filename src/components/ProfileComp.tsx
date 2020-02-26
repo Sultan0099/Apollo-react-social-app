@@ -6,9 +6,9 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 
-import BorderColorTwoToneIcon from "@material-ui/icons/BorderColorTwoTone";
-
 import { useQuery } from "@apollo/react-hooks";
+
+import CreatePost from "./CreatePost";
 
 import { FETCH_USER } from "../query";
 import { AuthContext } from "../context/Authcontext";
@@ -33,15 +33,7 @@ function ProfileComp() {
         Total Post : {data.user.posts.length}{" "}
       </Typography>
       <Divider />
-      <Button
-        type="button"
-        variant="contained"
-        color="primary"
-        className={classes.button}
-      >
-        <BorderColorTwoToneIcon style={{ marginRight: 5, width: 15 }} />
-        create Post
-      </Button>
+      <CreatePost />
     </Paper>
   );
 }
@@ -50,9 +42,6 @@ const useStyles = makeStyles({
   paper: {
     padding: 20,
     position: "fixed"
-  },
-  button: {
-    marginTop: 5
   }
 });
 

@@ -27,7 +27,7 @@ function Login(props: any): JSX.Element {
 
   const context = useContext(AuthContext);
 
-  const [email, setEmail] = useState<string>("user@gmail.com");
+  const [email, setEmail] = useState<string>("sultan@gmai.com");
   const [password, setPassword] = useState<string>("123456");
   const [errors, setErrors] = useState<IErrors>({});
 
@@ -38,8 +38,6 @@ function Login(props: any): JSX.Element {
       props.history.push("/");
     },
     onError(...err) {
-      console.log(err);
-
       const gqlErrors = err[0]?.graphQLErrors[0]?.extensions?.errors;
       console.log(gqlErrors);
 

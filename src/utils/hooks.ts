@@ -15,45 +15,37 @@ export function useFetchPosts() {
 
   const [posts, setPosts] = useState<any[]>([]);
 
-  const { data, error, refetch, loading } = useQuery(FETCH_PAGINATED_POST, {
-    variables: {
-      page: queryVariables.page,
-      postLength: queryVariables.postLength
+  const { data, error, refetch, loading, fetchMore } = useQuery(
+    FETCH_PAGINATED_POST,
+    {
+      variables: {
+        page: queryVariables.page,
+        postLength: queryVariables.postLength
+      }
     }
-  });
+  );
 
-  const checkData = data && data.paginatedPost.posts;
   useEffect(() => {
     if (data) {
-      // filtering post so it does not have dublicate
-      const filterePost = [...new Set([...posts, ...data.paginatedPost.posts])];
-      // lastPost is changed post after like
-      const lastPost = filterePost.slice(
-        filterePost.length - 1,
-        filterePost.length
-      );
-      // checking index of post whose id are equal and likes length are changed
-      const indexOfPost = filterePost.findIndex(
-        post =>
-          post.id === lastPost[0].id &&
-          post.likes.length !== lastPost[0].likes.length
-      );
-      // removing previous post and added new updated post
-      if (indexOfPost != -1) filterePost.splice(indexOfPost, 1, lastPost[0]);
-
-      setPosts([...new Set([...filterePost])]);
+      setPosts([...data?.paginatedPost.posts]);
     }
   }, [data?.paginatedPost?.posts]);
 
   async function fetchNextPosts() {
-    data.paginatedPost.hasMore &&
-      (await refetch({
+    await fetchMore({
+      variables: {
         page: queryVariables.page + 1,
         postLength: queryVariables.postLength
-      }));
-    setQueryVariables({
-      page: queryVariables.page + 1,
-      postLength: queryVariables.postLength
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        console.log("prev", prev);
+        console.log("fetchMore", fetchMoreResult);
+        setPosts([
+          ...prev.paginatedPost.posts,
+          ...fetchMoreResult.paginatedPost.posts
+        ]);
+      }
     });
   }
 
