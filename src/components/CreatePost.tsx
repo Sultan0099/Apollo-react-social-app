@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -15,20 +15,12 @@ import { useMutation } from "@apollo/react-hooks";
 import { CREATE_POST } from "../mutations";
 import { FETCH_PAGINATED_POST } from "../query";
 
-interface IPost {
-  key: string;
-  postId: string;
-  username: string;
-  body: string;
-  comments: any[];
-  likes: [];
-  createdAt: string;
-}
-
 function CreatePost() {
   const classes = useStyles();
+
   const [open, setOpen] = useState<boolean>(false);
   const [err, setErr] = useState<string>("");
+
   let textRef = useRef<HTMLInputElement>();
 
   const [createPost, { loading }] = useMutation(CREATE_POST, {
@@ -47,7 +39,7 @@ function CreatePost() {
         data: {
           paginatedPost: {
             posts: [...newPostsArray],
-            hasMore: prevPost?.hasMore,
+            hasMore: prevPost.hasMore,
             __typename: "paginatedPost"
           }
         }
@@ -64,7 +56,7 @@ function CreatePost() {
       await createPost({ variables: { body: postBody } });
       setOpen(false);
     } catch (err) {
-      setErr("Post body should be 4 to 50 character long");
+      setErr("Post body should be 4 to 500 character long");
     }
   }
   return (
@@ -97,6 +89,7 @@ function CreatePost() {
             error={err.length > 0 ? true : false}
             type="text"
             inputRef={textRef}
+            multiline={true}
             fullWidth
           />
           {err.length > 0 ? (

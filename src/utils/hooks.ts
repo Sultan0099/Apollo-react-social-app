@@ -45,6 +45,19 @@ export function useFetchPosts() {
           ...prev.paginatedPost.posts,
           ...fetchMoreResult.paginatedPost.posts
         ]);
+        const newObject = {
+          paginatedPost: {
+            posts: [
+              ...prev.paginatedPost.posts,
+              ...fetchMoreResult.paginatedPost.posts
+            ],
+            hasMore: fetchMoreResult.paginatedPost.hasMore,
+            __typename: fetchMoreResult.paginatedPost.__typename
+          }
+        };
+
+        console.log("newObject", newObject);
+        return newObject;
       }
     });
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,26 +8,24 @@ import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 
 import Like from "./Like";
 import Comment from "./Comment";
+import DeletePost from "./DeletePost";
+import PostActivityMenu from "./PostActivityMenu";
+import { AuthContext } from "../context/Authcontext";
 
-interface IPost {
-  key: string;
-  postId: string;
-  username: string;
-  body: string;
-  comments: any[];
-  likes: [];
-  createdAt: string;
-}
+import { IPost } from "../utils/interface";
 
 function Post(props: IPost) {
   const classes = useStyles();
+
+  const { user } = useContext(AuthContext);
+
   const { username, body, comments, likes, createdAt, postId } = props;
 
-  console.log(comments);
+  const isUserCreatedPost = user.username === username;
+
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -37,6 +35,9 @@ function Post(props: IPost) {
           <Typography gutterBottom variant="h5" component="h2">
             {username}
           </Typography>
+        }
+        action={
+          <PostActivityMenu isUserCreatedPost={isUserCreatedPost} {...props} />
         }
         subheader={
           <Typography
@@ -58,10 +59,6 @@ function Post(props: IPost) {
       <CardActions>
         <Like likesProp={likes} postId={postId} />
         <Comment commentsProp={comments} postId={postId} />
-        <Button variant="contained" color="secondary">
-          {" "}
-          delete
-        </Button>
       </CardActions>
     </Card>
   );
