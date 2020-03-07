@@ -1,20 +1,26 @@
 import React from "react";
 
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useQuery } from "@apollo/react-hooks";
 
 import Post from "./Post";
 import { useFetchPosts } from "../utils/hooks";
+import { SET_POST_CLIENT } from "../utils/typeDefsClient";
 
 function InfiniteScrollComp() {
+  const { data } = useQuery(SET_POST_CLIENT);
+
+  const posts = data && [...data?.setPosts];
   const {
     error,
-    posts,
     formatDate,
     fetchNextPosts,
     hasMore,
     loading
   } = useFetchPosts();
   if (error) return <p> error </p>;
+
+  if (!data) return <p> loading ... </p>;
 
   return (
     <InfiniteScroll

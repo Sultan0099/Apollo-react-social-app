@@ -15,6 +15,8 @@ import { useMutation } from "@apollo/react-hooks";
 import { CREATE_POST } from "../mutations";
 import { FETCH_PAGINATED_POST } from "../query";
 
+import { SET_POST_CLIENT } from "../utils/typeDefsClient";
+
 function CreatePost() {
   const classes = useStyles();
 
@@ -26,23 +28,12 @@ function CreatePost() {
   const [createPost, { loading }] = useMutation(CREATE_POST, {
     update(proxy, { data: { createPost } }) {
       console.log("createPost", createPost);
-      const prevPost: any = proxy.readQuery({
-        query: FETCH_PAGINATED_POST,
-        variables: { page: 1, postLength: 10 }
-      });
-
-      const newPostsArray = [createPost, ...prevPost?.paginatedPost?.posts];
+      const posts: any = proxy.readQuery({ query: SET_POST_CLIENT });
+      console.log(posts);
 
       proxy.writeQuery({
-        query: FETCH_PAGINATED_POST,
-        variables: { page: 1, postLength: 10 },
-        data: {
-          paginatedPost: {
-            posts: [...newPostsArray],
-            hasMore: prevPost.hasMore,
-            __typename: "paginatedPost"
-          }
-        }
+        query: SET_POST_CLIENT,
+        data: { setPosts: [createPost, ...posts.setPosts] }
       });
     }
   });

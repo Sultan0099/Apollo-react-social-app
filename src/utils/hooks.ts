@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useApolloClient } from "@apollo/react-hooks";
 
 import { FETCH_PAGINATED_POST } from "../query";
 import moment from "moment";
+
+import { SET_POST_CLIENT } from "./typeDefsClient";
 
 export function useFetchPosts() {
   const [queryVariables, setQueryVariables] = useState<{
@@ -14,52 +16,77 @@ export function useFetchPosts() {
   });
 
   const [posts, setPosts] = useState<any[]>([]);
+  const { data, error, loading, fetchMore } = useQuery(FETCH_PAGINATED_POST, {
+    variables: {
+      page: queryVariables.page,
+      postLength: queryVariables.postLength
+    },
+    fetchPolicy: "cache-and-network"
+  });
 
-  const { data, error, refetch, loading, fetchMore } = useQuery(
-    FETCH_PAGINATED_POST,
-    {
-      variables: {
-        page: queryVariables.page,
-        postLength: queryVariables.postLength
-      }
-    }
-  );
+  const { client } = useQuery(SET_POST_CLIENT);
 
   useEffect(() => {
     if (data) {
-      setPosts([...data?.paginatedPost.posts]);
+      console.log("useQuery data ", data);
+      const combinePosts: any[] = [
+        ...new Set([...posts, ...data?.paginatedPost.posts])
+      ];
+
+      //  reomve dublication
+
+      let filteredPost: any[] = [];
+      if (combinePosts.length > 0) {
+        for (let i = 0; i < combinePosts.length; i++) {
+          if (combinePosts[i]?.id !== combinePosts[i + 1]?.id) {
+            filteredPost.push(combinePosts[i]);
+          }
+        }
+
+        // SET POSTS TO POSTS
+        setPosts(filteredPost);
+
+        //  WIRTING DRIRECT DATA TO APOLLO CLIENT
+        client.writeQuery({
+          query: SET_POST_CLIENT,
+          data: { setPosts: filteredPost }
+        });
+      }
     }
   }, [data?.paginatedPost?.posts]);
 
   async function fetchNextPosts() {
-    await fetchMore({
-      variables: {
-        page: queryVariables.page + 1,
-        postLength: queryVariables.postLength
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-        console.log("prev", prev);
-        console.log("fetchMore", fetchMoreResult);
-        setPosts([
-          ...prev.paginatedPost.posts,
-          ...fetchMoreResult.paginatedPost.posts
-        ]);
-        const newObject = {
-          paginatedPost: {
-            posts: [
-              ...prev.paginatedPost.posts,
-              ...fetchMoreResult.paginatedPost.posts
-            ],
-            hasMore: fetchMoreResult.paginatedPost.hasMore,
-            __typename: fetchMoreResult.paginatedPost.__typename
-          }
-        };
+    try {
+      await fetchMore({
+        variables: {
+          page: queryVariables.page + 1,
+          postLength: queryVariables.postLength
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          // if (!fetchMoreResult) return prev;
+          console.log("prev", prev);
+          console.log("fetchMore", fetchMoreResult);
+          const newObject = {
+            paginatedPost: {
+              posts: [
+                ...prev.paginatedPost.posts,
+                ...fetchMoreResult.paginatedPost.posts
+              ],
+              hasMore: fetchMoreResult.paginatedPost.hasMore,
+              __typename: fetchMoreResult.paginatedPost.__typename
+            }
+          };
+          setQueryVariables({
+            page: queryVariables.page + 1,
+            postLength: 10
+          });
 
-        console.log("newObject", newObject);
-        return newObject;
-      }
-    });
+          return newObject;
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   function formatDate(date: string) {

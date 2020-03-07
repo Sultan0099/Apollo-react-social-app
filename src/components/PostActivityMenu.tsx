@@ -44,7 +44,7 @@ function PostActivityMenu(props: IPostActivity): JSX.Element {
           <DeletePost postId={props.postId} setAnchorEl={setAnchorEl} />
         ) : null}
 
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Edit Post</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
     </div>

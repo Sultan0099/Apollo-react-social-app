@@ -12,7 +12,7 @@ import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined"
 import { useMutation } from "@apollo/react-hooks";
 
 import { DELETE_POST } from "../mutations";
-import { FETCH_PAGINATED_POST } from "../query";
+import { SET_POST_CLIENT } from "../utils/typeDefsClient";
 
 function DeletePost(props: { postId: string; setAnchorEl: any }) {
   const classes = useStyles();
@@ -20,26 +20,20 @@ function DeletePost(props: { postId: string; setAnchorEl: any }) {
   const [deletePost] = useMutation(DELETE_POST, {
     update(proxy, data) {
       const prevData: any = proxy.readQuery({
-        query: FETCH_PAGINATED_POST,
-        variables: { page: 1, postLength: 10 }
+        query: SET_POST_CLIENT
       });
 
       console.log(prevData);
 
       if (prevData) {
-        const filteredPosts = prevData.paginatedPost.posts.filter(
+        const filteredPosts = prevData.setPosts.filter(
           (post: any) => post.id !== props.postId
         );
 
         proxy.writeQuery({
-          query: FETCH_PAGINATED_POST,
-          variables: { page: 1, postLength: 10 },
+          query: SET_POST_CLIENT,
           data: {
-            paginatedPost: {
-              posts: [...filteredPosts],
-              hasMore: prevData.hasMore,
-              __typename: "paginatedPost"
-            }
+            setPosts: [...filteredPosts]
           }
         });
       }
@@ -47,7 +41,6 @@ function DeletePost(props: { postId: string; setAnchorEl: any }) {
   });
 
   async function handleDeletePost() {
-    console.log("postId", props.postId);
     try {
       await deletePost({ variables: { id: props.postId } });
       props.setAnchorEl(null);

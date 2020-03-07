@@ -8,14 +8,23 @@ import ThumbUpAltTwoToneIcon from "@material-ui/icons/ThumbUpAltTwoTone";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useApolloClient } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+
 import { LIKE_POST } from "../mutations";
+import { SET_POST_CLIENT } from "../utils/typeDefsClient";
 
 import { AuthContext } from "../context/Authcontext";
 interface ILike {
   likesProp: any[];
   postId: string;
 }
+
+type Like = {
+  likePost: {
+    id: string;
+  };
+};
 
 function Like(props: ILike) {
   const { user } = useContext(AuthContext);
@@ -25,11 +34,10 @@ function Like(props: ILike) {
 
   const { likesProp, postId } = props;
 
+  const client = useApolloClient();
+
   const [likePost, { loading }] = useMutation(LIKE_POST, {
-    update(_: any, { data: { likePost } }) {
-      setLikes([...likePost.likes]);
-      setLike(!like);
-    }
+    fetchPolicy: "no-cache"
   });
 
   useEffect(() => {
@@ -39,7 +47,15 @@ function Like(props: ILike) {
   }, []);
 
   async function handleLikePost() {
-    await likePost({ variables: { postId } });
+    try {
+      const { data } = await likePost({ variables: { postId } });
+
+      setLikes([...data.likePost.likes]);
+
+      setLike(!like);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
