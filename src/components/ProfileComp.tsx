@@ -10,30 +10,42 @@ import { useQuery } from "@apollo/react-hooks";
 
 import CreatePost from "./CreatePost";
 
-import { FETCH_USER } from "../query";
 import { AuthContext } from "../context/Authcontext";
 
-function ProfileComp() {
-  const classes = useStyles();
+import { FETCH_USER } from "../query";
+
+function ProfileComp({
+  userId,
+  cardPosition
+}: {
+  userId: string;
+  cardPosition?: string;
+}) {
   const { user } = useContext(AuthContext);
-  const { data, loading, error } = useQuery(FETCH_USER, {
-    variables: { id: user.id }
+
+  const classes = useStyles();
+  const { data, loading } = useQuery(FETCH_USER, {
+    variables: { id: userId }
   });
 
   if (loading) return <p> loading...</p>;
 
   console.log(data);
   return (
-    <Paper className={classes.paper}>
+    <Paper
+      className={
+        cardPosition !== "relative" ? classes.paper : classes.paper_relative
+      }
+    >
       <Typography variant="h2"> {data.user.name} </Typography>
       <Typography variant="body1"> {data.user.username} </Typography>
       <Divider />
       <Typography variant="h6"> email : {data.user.email}</Typography>
       <Typography variant="h6">
-        Total Post : {data.user.posts.length}{" "}
+        Total Posts : {data.user.posts.length}{" "}
       </Typography>
       <Divider />
-      <CreatePost />
+      {user.username === data.user.username && <CreatePost userId={userId} />}
     </Paper>
   );
 }
@@ -42,6 +54,10 @@ const useStyles = makeStyles({
   paper: {
     padding: 20,
     position: "fixed"
+  },
+  paper_relative: {
+    padding: 20,
+    position: "relative"
   }
 });
 

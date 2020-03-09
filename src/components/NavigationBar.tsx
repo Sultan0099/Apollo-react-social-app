@@ -6,6 +6,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { Link } from "react-router-dom";
+
 const NavigationBar = (props: any) => {
   const classes = useStyles();
 
@@ -20,8 +22,13 @@ const NavigationBar = (props: any) => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            {username}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            className={classes.title}
+          >
+            {username.toUpperCase()}
           </Typography>
           <Button color="inherit" onClick={handleClick}>
             logout
@@ -39,7 +46,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    textDecoration: "none",
+    color: "white"
   }
 }));
 

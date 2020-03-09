@@ -9,6 +9,20 @@ export const FETCH_USER = gql`
       name
       posts {
         id
+        username
+        body
+        createdAt
+        likes {
+          id
+          likedBy
+          likedAt
+        }
+        comments {
+          id
+          body
+          commentBy
+          commentAt
+        }
       }
     }
   }

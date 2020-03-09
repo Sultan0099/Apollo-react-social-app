@@ -27,7 +27,7 @@ function Home(props: any): JSX.Element {
           <InfiniteScrollComp />
         </Grid>
         <Grid item xs={4}>
-          <ProfileComp />
+          <ProfileComp userId={context.user.id} />
         </Grid>
       </Grid>
     </div>

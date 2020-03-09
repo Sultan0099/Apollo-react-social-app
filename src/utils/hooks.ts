@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useQuery, useApolloClient } from "@apollo/react-hooks";
 
 import { FETCH_PAGINATED_POST } from "../query";
-import moment from "moment";
 
 import { SET_POST_CLIENT } from "./typeDefsClient";
 
@@ -89,15 +88,8 @@ export function useFetchPosts() {
     }
   }
 
-  function formatDate(date: string) {
-    let currentDate = new Date(parseInt(date));
-    return moment(currentDate).fromNow();
-  }
-
   return {
     error,
-    posts,
-    formatDate,
     fetchNextPosts,
     loading,
     hasMore: data && data.paginatedPost.hasMore

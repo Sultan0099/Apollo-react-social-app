@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef } from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -13,11 +13,11 @@ import BorderColorTwoToneIcon from "@material-ui/icons/BorderColorTwoTone";
 import { useMutation } from "@apollo/react-hooks";
 
 import { CREATE_POST } from "../mutations";
-import { FETCH_PAGINATED_POST } from "../query";
 
+import { FETCH_USER } from "../query";
 import { SET_POST_CLIENT } from "../utils/typeDefsClient";
 
-function CreatePost() {
+function CreatePost(props: any) {
   const classes = useStyles();
 
   const [open, setOpen] = useState<boolean>(false);
@@ -29,7 +29,6 @@ function CreatePost() {
     update(proxy, { data: { createPost } }) {
       console.log("createPost", createPost);
       const posts: any = proxy.readQuery({ query: SET_POST_CLIENT });
-      console.log(posts);
 
       proxy.writeQuery({
         query: SET_POST_CLIENT,
@@ -92,8 +91,8 @@ function CreatePost() {
               {err}
             </li>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </DialogContent>
         <DialogActions>
           <Button

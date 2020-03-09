@@ -8,11 +8,8 @@ import ThumbUpAltTwoToneIcon from "@material-ui/icons/ThumbUpAltTwoTone";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-import { useMutation, useApolloClient } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-
+import { useMutation } from "@apollo/react-hooks";
 import { LIKE_POST } from "../mutations";
-import { SET_POST_CLIENT } from "../utils/typeDefsClient";
 
 import { AuthContext } from "../context/Authcontext";
 interface ILike {
@@ -33,8 +30,6 @@ function Like(props: ILike) {
   const [likes, setLikes] = useState<any[]>([]);
 
   const { likesProp, postId } = props;
-
-  const client = useApolloClient();
 
   const [likePost, { loading }] = useMutation(LIKE_POST, {
     fetchPolicy: "no-cache"

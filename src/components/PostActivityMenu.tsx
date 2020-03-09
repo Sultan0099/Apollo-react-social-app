@@ -6,6 +6,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
+import { Link } from "react-router-dom";
+
 import DeletePost from "./DeletePost";
 import { IPost } from "../utils/interface";
 
@@ -41,11 +43,13 @@ function PostActivityMenu(props: IPostActivity): JSX.Element {
         onClose={handleClose}
       >
         {props.isUserCreatedPost ? (
-          <DeletePost postId={props.postId} setAnchorEl={setAnchorEl} />
+          <span>
+            <DeletePost postId={props.postId} setAnchorEl={setAnchorEl} />
+            <MenuItem onClick={handleClose}>Edit Post</MenuItem>
+          </span>
         ) : null}
 
-        <MenuItem onClick={handleClose}>Edit Post</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem>Show Details</MenuItem>
       </Menu>
     </div>
   );

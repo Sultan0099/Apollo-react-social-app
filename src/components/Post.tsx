@@ -9,9 +9,10 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 
+import { Link } from "react-router-dom";
+
 import Like from "./Like";
 import Comment from "./Comment";
-import DeletePost from "./DeletePost";
 import PostActivityMenu from "./PostActivityMenu";
 import { AuthContext } from "../context/Authcontext";
 
@@ -22,7 +23,7 @@ function Post(props: IPost) {
 
   const { user } = useContext(AuthContext);
 
-  const { username, body, comments, likes, createdAt, postId } = props;
+  const { username, body, comments, likes, createdAt, postId, userId } = props;
 
   const isUserCreatedPost = user.username === username;
 
@@ -32,12 +33,24 @@ function Post(props: IPost) {
         className={classes.cardHeader}
         avatar={<Avatar>{username.slice(0, 2).toUpperCase()}</Avatar>}
         title={
-          <Typography gutterBottom variant="h5" component="h2">
-            {username}
-          </Typography>
+          <Link
+            to={`profile/${userId}`}
+            style={{
+              textDecoration: "none",
+              color: "black"
+            }}
+          >
+            <Typography gutterBottom variant="h5" component="h2">
+              {username.toUpperCase()}
+            </Typography>
+          </Link>
         }
         action={
-          <PostActivityMenu isUserCreatedPost={isUserCreatedPost} {...props} />
+          <PostActivityMenu
+            isUserCreatedPost={isUserCreatedPost}
+            userId={userId}
+            {...props}
+          />
         }
         subheader={
           <Typography
@@ -70,8 +83,10 @@ const useStyles = makeStyles({
   },
   root: {
     maxWidth: 450,
+    minWidth: 390,
     marginBottom: 20,
-    border: "1px solid blue"
+    border: "1px solid blue",
+    marginRight: 10
   },
   media: {
     height: 140
